@@ -1,0 +1,28 @@
+#include<stdio.h>
+#include<pthread.h>
+#include<unistd.h>
+
+
+void *func(void *arg)
+{
+  for(int u= 0;u<= 5 ;u++)
+    {
+    printf("child");
+    sleep(2);
+    }
+}
+
+int main(){
+  
+  pthread_t th;
+  
+  pthread_create(&th,NULL,func,NULL);
+  
+  for (int i = 0;i <= 10;i++)
+    {
+    printf("parent");
+    sleep(1);
+  }
+  pthread_join(th,NULL);
+}
+  
