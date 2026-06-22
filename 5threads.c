@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<time.h>
-#include<pthread.h>
+#include <stdio.h>
+#include <time.h>
+#include <pthread.h>
 
 #define COUNT 1000
 #define LOOP 10000
@@ -8,48 +8,47 @@ struct timespec ts[5][COUNT];
 
 void busy(void)
 {
-  for (int w = 0;w < LOOP;w++)
+  for (int w = 0; w < LOOP; w++)
     {
     }
 }
-  
 
 void *fun(void *arg) {
-  int thn=(int)arg;
-  for (int i = 0;i<COUNT;i++){
+  // 64bit環境の警告避けのため long で受け取ってから int にしています
+  int thn = (int)(long)arg; 
+  for (int i = 0; i < COUNT; i++){
     busy();
-    clock_gettime(CLOCK_REALTIME,&ts[thn][i]);
+    clock_gettime(CLOCK_REALTIME, &ts[thn][i]);
   }
+  return NULL; // 関数が値を返すよう追加
 }
-
 
 int main(){
   
   struct timespec x;
-  clock_gettime(CLOCK_REALTIME,&x);/*今の時間*/
+  clock_gettime(CLOCK_REALTIME, &x); /*今の時間*/
   long startt = x.tv_sec * 1000000000 + x.tv_nsec;
   
-  pthread_t th0,th1,th2,th3,th4;
+  pthread_t th0, th1, th2, th3, th4;
   
-  pthread_create(&th0,NULL,fun,(void *)0);
-  pthread_create(&th1,NULL,fun,(void *)1);
-  pthread_create(&th2,NULL,fun,(void *)2);
-  pthread_create(&th3,NULL,fun,(void *)3);
-  pthread_create(&th4,NULL,fun,(void *)4);
+  pthread_create(&th0, NULL, fun, (void *)0);
+  pthread_create(&th1, NULL, fun, (void *)1);
+  pthread_create(&th2, NULL, fun, (void *)2);
+  pthread_create(&th3, NULL, fun, (void *)3);
+  pthread_create(&th4, NULL, fun, (void *)4);
 
-  pthread_join(th0,NULL);
-  pthread_join(th1,NULL);
-  pthread_join(th2,NULL);
-  pthread_join(th3,NULL);
-  pthread_join(th4,NULL);
-  for (int thn = 0; thn <5;thn++){
-    for(int i=0; i< COUNT ;i++){
-      long t = ts[thn][i].tv_sec* 100000000 * ts[thn][i].tv_nsec;
-      printf("%ld\t%d\n",t-startt,thn);
+  pthread_join(th0, NULL);
+  pthread_join(th1, NULL);
+  pthread_join(th2, NULL);
+  pthread_join(th3, NULL);
+  pthread_join(th4, NULL);
+  
+  for (int thn = 0; thn < 5; thn++){
+    for(int i=0; i < COUNT; i++){
+      // ★ ここを修正しました（10億を掛けて、tv_nsecを足す）
+      long t = ts[thn][i].tv_sec * 1000000000 + ts[thn][i].tv_nsec;
+      printf("%ld\t%d\n", t - startt, thn);
     }
   }
+  return 0;
 }
-
-
-  
-  
