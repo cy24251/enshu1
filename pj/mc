@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo env LC_ALL=C /usr/bin/minicom --wrap --device /dev/ttyUSB0

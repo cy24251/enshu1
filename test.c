@@ -2,5 +2,5 @@
 int main()
 {
   printf("hello SIT\n");
-  printf("しゅうせい\n")
+  printf("修正\n")
 }

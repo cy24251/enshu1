@@ -1,0 +1,10 @@
+#include <stdio.h>
+
+int main(){
+  long long a = 0,i = 0;
+  for (i;i <= 1000000000;i++){
+    a = a + i;
+  }
+  printf("%d",a);
+  return 0;
+}
